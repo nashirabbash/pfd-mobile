@@ -1,24 +1,35 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { PaperProvider } from "react-native-paper";
+import "react-native-reanimated";
+import FontProvider from "../contexts/FontProvider";
+import { ThemeProvider, useTheme } from "../contexts/ThemeContext";
+import "./global.css";
 
 export const unstable_settings = {
-  anchor: '(tabs)',
+  anchor: "(screens)",
 };
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+function AppContent() {
+  const { paperTheme } = useTheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <PaperProvider theme={paperTheme}>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+        <Stack.Screen name="(screens)" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />
-    </ThemeProvider>
+    </PaperProvider>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    // FontProvider ensures fonts are loaded before rendering the rest of the app
+    <FontProvider>
+      <ThemeProvider>
+        <AppContent />
+      </ThemeProvider>
+    </FontProvider>
   );
 }
